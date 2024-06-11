@@ -1,5 +1,6 @@
 .categories {
     display: flex;
+    flex-wrap: wrap;
     width: 100%;
     gap: 8px;
     align-items: flex-start;

@@ -6,6 +6,9 @@ import NewsList from "../../components/NewsList/NewsList.tsx";
 import Skeleton from '../../components/Skeleton/Skeleton.tsx';
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import Categories from "../../components/Categories/Categories.tsx";
+import Search from "../../components/Search/Search.tsx";
+import {useDebounce} from "../../helpers/hooks/src/shared/hooks/useDebounce.ts";
+
 
 
 
@@ -15,18 +18,21 @@ const Main: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [categories, setCategories] = useState([]);
     const [selectedCategory, setSelectedCategory] = useState("All");
+    const [keywords, setKeywords] = useState('');
     const totalPages = 10;
     const pageSize = 10;
 
-    const fetchNews = async (currentPage) => {
+    const debouncedKeywords = useDebounce(keywords, 1500);
+
+    const fetchNews = async () => {
         try {
             setIsLoading(true);
             const response = await getNews({
                 page_number: currentPage,
                 page_size: pageSize,
                 category: selectedCategory === "All" ? null : selectedCategory,
+                keywords: debouncedKeywords,
             });
-            console.log(response);
             setNews(response);
             setIsLoading(false);
         } catch (error) {
@@ -49,8 +55,8 @@ const Main: React.FC = () => {
     }, []);
 
     useEffect(() => {
-        fetchNews(currentPage);
-    }, [currentPage, selectedCategory]);
+        fetchNews();
+    }, [currentPage, selectedCategory, debouncedKeywords]);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -73,29 +79,22 @@ const Main: React.FC = () => {
             <Categories
                 categories={categories}
                 selectedCategory={selectedCategory}
-                setSelectedCategory={setSelectedCategory}
+                setSelectedCategory={(category) => {
+                    setSelectedCategory(category);
+                    setCurrentPage(1); // Reset page to 1 when category changes
+                }}
             />
-
+            <Search keywords={keywords} setKeywords={setKeywords} />
             {news.length > 0 && !isLoading ? (
                 <NewsBanner item={news[0]} />
             ) : (
                 <Skeleton count={1} type={"banner"} />
             )}
-
-            <Pagination
-                handleNextPage={handleNextPage}
-                handlePreviousPage={handlePreviousPage}
-                handlePageClick={handlePageClick}
-                currentPage={currentPage}
-                totalPages={totalPages}
-            />
-
             {!isLoading ? (
                 <NewsList news={news} />
             ) : (
                 <Skeleton count={10} type={"item"} />
             )}
-
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePreviousPage={handlePreviousPage}
