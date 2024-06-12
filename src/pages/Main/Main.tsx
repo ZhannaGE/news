@@ -3,7 +3,6 @@ import styles from './styles.module.css';
 import NewsBanner from '../../components/NewsBanner/NewsBanner';
 import { getNews, getCategories } from '../../api/apiNews';
 import NewsList from "../../components/NewsList/NewsList.tsx";
-import Skeleton from '../../components/Skeleton/Skeleton.tsx';
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import Categories from "../../components/Categories/Categories.tsx";
 import Search from "../../components/Search/Search.tsx";
@@ -84,17 +83,13 @@ const Main: React.FC = () => {
                     setCurrentPage(1); // Reset page to 1 when category changes
                 }}
             />
+
             <Search keywords={keywords} setKeywords={setKeywords} />
-            {news.length > 0 && !isLoading ? (
-                <NewsBanner item={news[0]} />
-            ) : (
-                <Skeleton count={1} type={"banner"} />
-            )}
-            {!isLoading ? (
-                <NewsList news={news} />
-            ) : (
-                <Skeleton count={10} type={"item"} />
-            )}
+
+            <NewsBanner isLoading={isLoading} item={news.length > 0 && news[0]} />
+
+            <NewsList isLoading={isLoading}  news={news} />
+
             <Pagination
                 handleNextPage={handleNextPage}
                 handlePreviousPage={handlePreviousPage}

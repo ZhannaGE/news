@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './styles.module.css';
 import { formatTimeAgo } from '../../helpers/formatTimeAgo';
 import Image from '../../components/Image/Image';
+import withSkeleton from "../../helpers/hock/withSkeleton.tsx";
 
 type NewsItem = {
     title: string;
@@ -24,4 +25,6 @@ const NewsBanner: React.FC<NewsBannerProps> = ({ item }) => {
     );
 };
 
-export default NewsBanner;
+const NewsBannerWithSkeleton = withSkeleton(NewsBanner, 'banner', 1);
+
+export default NewsBannerWithSkeleton;
