@@ -5,8 +5,11 @@ import { getNews, getCategories } from '../../api/apiNews';
 import NewsList from "../../components/NewsList/NewsList.tsx";
 import Pagination from "../../components/Pagination/Pagination.tsx";
 import Categories from "../../components/Categories/Categories.tsx";
-import Search from "../../components/Search/Search.tsx";
 import {useDebounce} from "../../helpers/hooks/src/shared/hooks/useDebounce.ts";
+import {Search} from "@/components/Search.tsx";
+import {Input} from "@/components/ui/input.tsx";
+
+import {InputWithButton} from "@/components/Input/Input.tsx";
 
 
 
@@ -75,6 +78,9 @@ const Main: React.FC = () => {
 
     return (
         <main className={styles.main}>
+            {/*<Search keywords={keywords} setKeywords={setKeywords} />*/}
+             <InputWithButton/>
+
             <Categories
                 categories={categories}
                 selectedCategory={selectedCategory}
@@ -83,8 +89,6 @@ const Main: React.FC = () => {
                     setCurrentPage(1); // Reset page to 1 when category changes
                 }}
             />
-
-            <Search keywords={keywords} setKeywords={setKeywords} />
 
             <NewsBanner isLoading={isLoading} item={news.length > 0 && news[0]} />
 
